@@ -48,3 +48,66 @@ http://localhost:8080/swagger-ui/index.html
 - Unit tests are under `app/src/test/java` (uses JUnit 5 + Mockito).
 - Integration tests use `@SpringBootTest` + `MockMvc`.
 
+## HOW TO
+
+**Make This Production-Ready:**
+- **Use a persistent database:** replace the in-memory repo with a real DB (see MongoDB section below) or an RDBMS. Add connection pooling and connection/credential management.
+- **Caching:** switch the simple `ConcurrentMapCacheManager` to a production cache such as Caffeine (in-process with TTL and size limits) or Redis (distributed). Use TTLs and cache invalidation strategies appropriate to your domain.
+- **Configuration & Secrets:** externalize configuration (Spring `application-*.yml` profiles, environment variables, Vault/Secret Manager for credentials). Do not commit secrets to the repo.
+- **Observability:** add metrics (Micrometer + Prometheus), structured logging, and distributed tracing (OpenTelemetry). Expose `/actuator` endpoints (health, metrics) and secure them.
+- **Resilience:** add retries, timeouts, and circuit breakers (Resilience4j) around external calls.
+- **Security:** add authentication/authorization (JWT/OAuth2) and validate/request sanitize inputs. Protect endpoints and the Swagger UI in non-dev environments.
+- **Testing & CI:** add comprehensive unit and integration tests, and run them in CI (GitHub Actions/GitLab CI). Add stage-specific environments (dev/staging/prod).
+- **Deployment:** containerize with a small base image (e.g., Eclipse Temurin/OpenJDK), build reproducible images, and deploy with an orchestration platform (Kubernetes) or PaaS. Add readiness/liveness probes.
+- **Data & Migrations:** add migration tooling (for Mongo use Mongock; for SQL use Flyway/Liquibase). Plan backups and restore procedures.
+- **Performance & Cost:** load test critical endpoints and tune JVM, heap, thread pools, and DB indexes.
+
+**Integrating with MongoDB:**
+1. **Add dependency (pom.xml):**
+
+```xml
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-data-mongodb</artifactId>
+</dependency>
+```
+
+2. **Update the domain model:** annotate the `Product` class with `@Document` and use `String` (or `ObjectId`) as the id type.
+
+Example snippet for `Product`:
+
+```java
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "products")
+public class Product {
+	@Id
+	private String id;
+	// rest of fields
+}
+```
+
+3. **Create a Spring Data repository:** replace `InMemoryProductRepository` with an interface:
+
+```java
+import org.springframework.data.mongodb.repository.MongoRepository;
+
+public interface ProductRepository extends MongoRepository<Product, String> {
+	// add query methods if needed, e.g. List<Product> findByBrand(String brand);
+}
+```
+
+4. **Configuration:** set your Mongo connection in `src/main/resources/application.properties` (or `application.yml`):
+
+```properties
+spring.data.mongodb.uri=mongodb://uri/ecommercedb
+spring.data.mongodb.database=ecommercedb
+```
+
+For production, do not hardcode credentials — use environment variables or a secret manager.
+
+5. **Migrations & Indexes:** use Mongock or a similar migration tool to define index creation and data migrations. Define indexes for frequently queried fields (e.g., `brand`, `categories`, `price`).
+
+6. **Performance considerations:** use proper indexing, projection, and pagination via Mongo queries rather than in-memory filtering for large datasets.
+
