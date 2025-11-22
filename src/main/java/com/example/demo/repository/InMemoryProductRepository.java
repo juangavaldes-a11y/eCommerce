@@ -29,7 +29,9 @@ public class InMemoryProductRepository {
     }
 
     public List<Product> findAll() {
-        return new ArrayList<>(store.values());
+        // return an unmodifiable copy snapshot of current values to avoid callers
+        // mutating the internal store and to provide consistent view
+        return List.copyOf(store.values());
     }
 
     public void deleteById(Long id) {
