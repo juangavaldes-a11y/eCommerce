@@ -63,4 +63,25 @@ public class ProductController {
         List<Product> res = service.list(brand, category, priceMin, priceMax, sort, page, size);
         return ResponseEntity.ok(res);
     }
+
+    /**
+     * Update a product by id. Replaces product fields with the request values.
+     * Returns 204 No Content on success, 404 Not Found if the product doesn't exist.
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> update(@PathVariable Long id, @Valid @RequestBody ProductRequest req) {
+        boolean updated = service.update(id, req);
+        if (updated) return ResponseEntity.noContent().build();
+        return ResponseEntity.notFound().build();
+    }
+
+    /**
+     * Delete a product by id. Returns 204 No Content on success, 404 Not Found otherwise.
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        boolean deleted = service.delete(id);
+        if (deleted) return ResponseEntity.noContent().build();
+        return ResponseEntity.notFound().build();
+    }
 }

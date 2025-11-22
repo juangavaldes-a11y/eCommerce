@@ -102,4 +102,38 @@ public class ProductService {
                 .limit(size)
                 .collect(Collectors.toList());
     }
+
+    /**
+     * Update an existing product by id with values from the request.
+     * Only replaces fields from the request (no partial-merge logic beyond direct assignment).
+     *
+     * @param id product identifier
+     * @param req update request payload
+     * @return true if product existed and was updated, false if not found
+     */
+    public boolean update(Long id, ProductRequest req) {
+        return repo.findById(id).map(existing -> {
+            existing.setName(req.getName());
+            existing.setDescription(req.getDescription());
+            existing.setBrand(req.getBrand());
+            existing.setPrice(req.getPrice() == null ? existing.getPrice() : req.getPrice());
+            existing.setInventory(req.getInventory() == null ? existing.getInventory() : req.getInventory());
+            existing.setCategories(req.getCategories());
+            repo.save(existing);
+            return true;
+        }).orElse(false);
+    }
+
+    /**
+     * Delete a product by id.
+     *
+     * @param id product identifier
+     * @return true if the product existed and was deleted, false otherwise
+     */
+    public boolean delete(Long id) {
+        return repo.findById(id).map(p -> {
+            repo.deleteById(id);
+            return true;
+        }).orElse(false);
+    }
 }
