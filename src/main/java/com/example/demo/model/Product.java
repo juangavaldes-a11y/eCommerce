@@ -4,6 +4,11 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Domain model representing a product in the catalog.
+ *
+ * This is a simple POJO used by the in-memory repository and service layer.
+ */
 public class Product {
     private Long id;
     private String name;

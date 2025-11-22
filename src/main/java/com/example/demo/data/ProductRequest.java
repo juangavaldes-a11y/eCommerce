@@ -5,6 +5,10 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
+/**
+ * DTO used for creating or updating a Product via the REST API.
+ * Validation annotations ensure required fields are present and valid.
+ */
 public class ProductRequest {
     @NotBlank
     private String name;
