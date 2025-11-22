@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import com.example.demo.util.UriFactory;
+import java.util.List;
 
 @RestController
 @RequestMapping("/products")
@@ -43,5 +44,23 @@ public class ProductController {
         return service.getById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    /**
+     * List products with optional filters, sorting and pagination.
+     * Supported query params: brand, category, priceMin, priceMax, sort (price/name/date), page, size
+     */
+    @GetMapping
+    public ResponseEntity<List<Product>> list(
+            @RequestParam(required = false) String brand,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) Double priceMin,
+            @RequestParam(required = false) Double priceMax,
+            @RequestParam(required = false, defaultValue = "date") String sort,
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "10") int size
+    ) {
+        List<Product> res = service.list(brand, category, priceMin, priceMax, sort, page, size);
+        return ResponseEntity.ok(res);
     }
 }
