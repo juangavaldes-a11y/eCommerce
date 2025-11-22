@@ -1,4 +1,4 @@
-package main.java.com.ecomerce.model;
+package com.ecomerce.model;
 
 import java.time.Instant;
 import java.util.List;

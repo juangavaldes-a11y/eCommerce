@@ -1,14 +1,14 @@
-package main.java.com.ecomerce.controller;
+package com.ecomerce.controller;
 
-import main.java.com.ecomerce.data.ProductRequest;
-import main.java.com.ecomerce.model.Product;
-import main.java.com.ecomerce.service.ProductService;
+import com.ecomerce.data.ProductRequest;
+import com.ecomerce.model.Product;
+import com.ecomerce.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import main.java.com.ecomerce.util.UriFactory;
+import com.ecomerce.util.UriFactory;
 import java.util.List;
 
 @RestController

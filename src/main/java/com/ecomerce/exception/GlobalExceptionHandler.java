@@ -1,4 +1,4 @@
-package main.java.com.ecomerce.exception;
+package com.ecomerce.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,9 +1,9 @@
-package main.java.com.ecomerce.service;
+package com.ecomerce.service;
 
-import main.java.com.ecomerce.data.ProductRequest;
-import main.java.com.ecomerce.model.Product;
-import main.java.com.ecomerce.repository.InMemoryProductRepository;
-import main.java.com.ecomerce.exception.NotFoundException;
+import com.ecomerce.data.ProductRequest;
+import com.ecomerce.model.Product;
+import com.ecomerce.repository.InMemoryProductRepository;
+import com.ecomerce.exception.NotFoundException;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;

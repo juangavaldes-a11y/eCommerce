@@ -1,4 +1,4 @@
-package main.java.com.ecomerce.data;
+package com.ecomerce.data;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
