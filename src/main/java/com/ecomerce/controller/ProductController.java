@@ -1,14 +1,14 @@
-package com.example.demo.controller;
+package main.java.com.ecomerce.controller;
 
-import com.example.demo.data.ProductRequest;
-import com.example.demo.model.Product;
-import com.example.demo.service.ProductService;
+import main.java.com.ecomerce.data.ProductRequest;
+import main.java.com.ecomerce.model.Product;
+import main.java.com.ecomerce.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import com.example.demo.util.UriFactory;
+import main.java.com.ecomerce.util.UriFactory;
 import java.util.List;
 
 @RestController
@@ -41,9 +41,8 @@ public class ProductController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<Product> getById(@PathVariable Long id) {
-        return service.getById(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        Product p = service.getById(id);
+        return ResponseEntity.ok(p);
     }
 
     /**
@@ -70,9 +69,8 @@ public class ProductController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<Void> update(@PathVariable Long id, @Valid @RequestBody ProductRequest req) {
-        boolean updated = service.update(id, req);
-        if (updated) return ResponseEntity.noContent().build();
-        return ResponseEntity.notFound().build();
+        service.update(id, req);
+        return ResponseEntity.noContent().build();
     }
 
     /**
@@ -80,8 +78,7 @@ public class ProductController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        boolean deleted = service.delete(id);
-        if (deleted) return ResponseEntity.noContent().build();
-        return ResponseEntity.notFound().build();
+        service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

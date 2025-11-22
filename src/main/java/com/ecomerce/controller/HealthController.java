@@ -1,4 +1,4 @@
-package com.example.demo.controller;
+package main.java.com.ecomerce.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

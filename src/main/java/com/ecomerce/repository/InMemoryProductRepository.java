@@ -1,6 +1,6 @@
-package com.example.demo.repository;
+package main.java.com.ecomerce.repository;
 
-import com.example.demo.model.Product;
+import main.java.com.ecomerce.model.Product;
 import org.springframework.stereotype.Repository;
 
 import java.time.Instant;

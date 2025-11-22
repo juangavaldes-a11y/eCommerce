@@ -1,8 +1,11 @@
-package com.example.demo.service;
+package main.java.com.ecomerce.service;
 
-import com.example.demo.data.ProductRequest;
-import com.example.demo.model.Product;
-import com.example.demo.repository.InMemoryProductRepository;
+import main.java.com.ecomerce.data.ProductRequest;
+import main.java.com.ecomerce.model.Product;
+import main.java.com.ecomerce.repository.InMemoryProductRepository;
+import main.java.com.ecomerce.exception.NotFoundException;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -44,8 +47,9 @@ public class ProductService {
      * @param id product identifier
      * @return an Optional containing the product if found, otherwise empty
      */
-    public Optional<Product> getById(Long id) {
-        return repo.findById(id);
+    @Cacheable(value = "products", key = "#id")
+    public Product getById(Long id) {
+        return repo.findById(id).orElseThrow(() -> new NotFoundException("Product not found: " + id));
     }
 
     /**
@@ -111,17 +115,16 @@ public class ProductService {
      * @param req update request payload
      * @return true if product existed and was updated, false if not found
      */
-    public boolean update(Long id, ProductRequest req) {
-        return repo.findById(id).map(existing -> {
-            existing.setName(req.getName());
-            existing.setDescription(req.getDescription());
-            existing.setBrand(req.getBrand());
-            existing.setPrice(req.getPrice() == null ? existing.getPrice() : req.getPrice());
-            existing.setInventory(req.getInventory() == null ? existing.getInventory() : req.getInventory());
-            existing.setCategories(req.getCategories());
-            repo.save(existing);
-            return true;
-        }).orElse(false);
+    @CacheEvict(value = "products", key = "#id")
+    public void update(Long id, ProductRequest req) {
+        Product existing = repo.findById(id).orElseThrow(() -> new NotFoundException("Product not found: " + id));
+        existing.setName(req.getName());
+        existing.setDescription(req.getDescription());
+        existing.setBrand(req.getBrand());
+        existing.setPrice(req.getPrice() == null ? existing.getPrice() : req.getPrice());
+        existing.setInventory(req.getInventory() == null ? existing.getInventory() : req.getInventory());
+        existing.setCategories(req.getCategories());
+        repo.save(existing);
     }
 
     /**
@@ -130,10 +133,12 @@ public class ProductService {
      * @param id product identifier
      * @return true if the product existed and was deleted, false otherwise
      */
-    public boolean delete(Long id) {
-        return repo.findById(id).map(p -> {
+    @CacheEvict(value = "products", key = "#id")
+    public void delete(Long id) {
+        if (repo.findById(id).isPresent()) {
             repo.deleteById(id);
-            return true;
-        }).orElse(false);
+        } else {
+            throw new NotFoundException("Product not found: " + id);
+        }
     }
 }

@@ -1,4 +1,4 @@
-package com.example.demo.util;
+package main.java.com.ecomerce.util;
 
 import java.net.URI;
 import java.util.Objects;
