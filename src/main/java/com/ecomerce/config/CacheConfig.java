@@ -10,7 +10,7 @@ public class CacheConfig {
 
     @Bean
     public CacheManager cacheManager() {
-        // Simple in-memory cache manager. Replace with Caffeine or Redis for production.
+        // Simple in-memory cache manager.
         return new ConcurrentMapCacheManager("products");
     }
 }

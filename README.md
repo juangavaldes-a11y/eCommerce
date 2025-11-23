@@ -44,6 +44,13 @@ The project includes `springdoc-openapi-starter-webmvc-ui`. After running the ap
 http://localhost:8080/swagger-ui/index.html
 ```
 
+If you need the raw OpenAPI JSON (for tools or CI), fetch:
+
+```
+http://localhost:8080/v3/api-docs
+```
+
+
 ## Tests
 - Unit tests are under `app/src/test/java` (uses JUnit 5 + Mockito).
 - Integration tests use `@SpringBootTest` + `MockMvc`.

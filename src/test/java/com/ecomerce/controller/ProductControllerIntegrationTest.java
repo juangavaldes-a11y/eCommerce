@@ -1,7 +1,8 @@
 package com.ecomerce.controller;
 
+import com.ecomerce.dto.ProductRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ecomerce.data.ProductRequest;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -15,6 +16,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Integration tests for `ProductController`.
+ *
+ * This test boots the full Spring context and uses `MockMvc` to exercise the
+ * controller stack (serialization, validation, controller, service, repository).
+ * It verifies end-to-end behavior for creating a product and then retrieving it
+ * via the `Location` header returned by the create endpoint.
+ */
 @SpringBootTest
 @AutoConfigureMockMvc
 class ProductControllerIntegrationTest {
@@ -34,18 +43,20 @@ class ProductControllerIntegrationTest {
 
         String body = objectMapper.writeValueAsString(req);
 
-        // create
+        // Step 1: create - POST /products with a valid ProductRequest
         var result = mvc.perform(post("/products")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(body))
                 .andExpect(status().isCreated())
                 .andExpect(header().exists("Location"))
                 .andReturn();
-
+        // Capture the Location header returned by the controller (URI of new resource)
         String location = result.getResponse().getHeader("Location");
-        // fetch created resource
+
+        // Step 2: retrieve - GET the created resource using the Location URI and
+        // assert the returned JSON matches the original request
         mvc.perform(get(location))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Integration Product"));
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.name").value("Integration Product"));
     }
 }

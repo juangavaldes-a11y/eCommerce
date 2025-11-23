@@ -1,8 +1,8 @@
 package com.ecomerce.service;
 
-import com.ecomerce.data.ProductRequest;
 import com.ecomerce.model.Product;
 import com.ecomerce.repository.InMemoryProductRepository;
+import com.ecomerce.dto.ProductRequest;
 import com.ecomerce.exception.NotFoundException;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
